@@ -30,6 +30,8 @@ type RepoFactory =
         Metametamodels.RobotsTestModelBuilder() |> build
         Metametamodels.AirSimMetamodelBuilder() |> build
         Metametamodels.AirSimModelBuilder() |> build
+        Metametamodels.AppGenMetamodelBuilder() |> build
+        Metametamodels.AppGenModelBuilder() |> build
 
         new FacadeLayer.Repo(data) :> IRepo
 

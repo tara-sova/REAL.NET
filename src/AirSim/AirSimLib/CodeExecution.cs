@@ -94,6 +94,8 @@ namespace AirSim.AirSimLib
         {
             public abstract void ExecuteNode(INode node, MultirotorClient client);
 
+
+            //THIS
             public virtual INode GetNextNode(
                                                 INode node,
                                                 MultirotorClient client,

@@ -108,6 +108,11 @@ namespace WpfControlsLib.Model
             this.Reinit?.Invoke(this, EventArgs.Empty);
         }
 
+        public void Update()
+        {
+            this.Reinit?.Invoke(this, EventArgs.Empty);
+        }
+
         /// <summary>
         /// Saves current repository into current file. Current file name must be set before this operation is called.
         /// </summary>
