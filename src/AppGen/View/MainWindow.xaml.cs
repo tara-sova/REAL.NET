@@ -115,11 +115,11 @@ namespace AppGen.View
 
         private async void ImportButtonClick(object sender, RoutedEventArgs e)   //NOT ASYNC
         {
-            string generatedXMLModelFileName = @"C:\Users\polina\Documents\xmlModels\generatedModel.xml";//"generatedModel.xml";
+            string generatedXMLModelFileName = AppDomain.CurrentDomain.BaseDirectory + "..\\.." + "\\generatedModel.xml";//@"C:\Users\polina\Documents\xmlModels\generatedModel.xml";//"generatedModel.xml";
             string classForGeneration = "LectureListActivity.java";
             string classTemplate = "LectureListActivityTemplate.cshtml";
-            string pathToDirectoryWithFeatures = @"C:\Users\polina\Documents\adminapp";//"adminapp";
-            string pathToTargetDirectory = @"C:\Users\polina\Documents\AppForGeneration\AdminApp\app\src\main\java\com\example\polina";
+            string pathToDirectoryWithFeatures = AppDomain.CurrentDomain.BaseDirectory + "..\\.." + "\\diploma_app\\adminapp";//@"C:\Users\polina\Documents\adminapp";//"adminapp";
+            string pathToTargetDirectory = AppDomain.CurrentDomain.BaseDirectory + "..\\.." + "\\diploma_app\\AppForGeneration\\AdminApp\\app\\src\\main\\java\\com\\example\\polina";//@"C:\Users\polina\Documents\AppForGeneration\AdminApp\app\src\main\java\com\example\polina";
             //AppForGeneration /AdminApp/app/src/main/java/com/example/polina/";
 
 

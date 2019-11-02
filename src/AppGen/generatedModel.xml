@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<model name="generated_model">
+  <abstract_node name="EventInfo">
+    <concrete_nodes>
+      <concrete_node name="AttendedClients">
+        <selected>false</selected>
+        <clickTO>LectureListActivity</clickTO>
+        <required>false</required>
+      </concrete_node>
+    </concrete_nodes>
+  </abstract_node>
+  <abstract_node name="UseServer">
+    <concrete_nodes>
+      <concrete_node name="Server">
+        <selected>false</selected>
+        <required>false</required>
+      </concrete_node>
+    </concrete_nodes>
+  </abstract_node>
+  <xor>
+    <abstract_node name="EventManipulations">
+      <concrete_nodes>
+        <or>
+          <concrete_node name="LectureAddition">
+            <selected>false</selected>
+            <onButtonClickFromArgTO>LectureListActivity</onButtonClickFromArgTO>
+            <required>false</required>
+          </concrete_node>
+          <concrete_node name="LectureDeletion">
+            <selected>false</selected>
+            <swipeRightTO>LectureListActivity</swipeRightTO>
+            <required>false</required>
+          </concrete_node>
+          <concrete_node name="LectureEdition">
+            <selected>false</selected>
+            <longClickTO>LectureListActivity</longClickTO>
+            <required>false</required>
+          </concrete_node>
+        </or>
+      </concrete_nodes>
+    </abstract_node>
+    <abstract_node name="RegisterOnAnEvent">
+      <concrete_nodes>
+        <concrete_node name="BeAttended">
+          <selected>false</selected>
+          <longClickTO>LectureListActivity</longClickTO>
+          <required>false</required>
+        </concrete_node>
+      </concrete_nodes>
+    </abstract_node>
+  </xor>
+</model>

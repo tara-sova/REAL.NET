@@ -20,11 +20,11 @@ namespace AppGen.AppGenLib
 
             var engine = new RazorLightEngineBuilder();
 
-            var engineUFSP = engine.UseFilesystemProject("C:\\Users\\polina\\Documents\\REAL.NET\\src\\AppGen");
+            var engineUFSP = engine.UseFilesystemProject(AppDomain.CurrentDomain.BaseDirectory + "..\\..");
             var engineUMCP = engineUFSP.UseMemoryCachingProvider();
             var engineBuid = engineUMCP.Build();
 
-            var comppilied = engineBuid.CompileRenderAsync("Folder\\LectureListActivityTemplate.cshtml", model);
+            var comppilied = engineBuid.CompileRenderAsync("LectureListActivityTemplate.cshtml", model);
             var result = comppilied.Result;
             File.WriteAllText(Path.Combine(pathToDirectoryWithFeatures, classForGeneration), result);
             Console.WriteLine("File generated");
