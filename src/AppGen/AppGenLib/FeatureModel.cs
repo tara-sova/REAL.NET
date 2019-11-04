@@ -13,11 +13,6 @@ namespace AppGen.AppGenLib
         public FeatureModel()
         {
         }
-
-        private void addFeatureWithSelectFlag(string name, bool isSelected)
-        {
-            Features.Add(name, isSelected);
-        }
         
         public FeatureModel LoadFeatureModelByRepoModel(Repo.IModel repoModel, Action<string> writeToConsole)
         {
@@ -31,6 +26,11 @@ namespace AppGen.AppGenLib
             }
             catch (Exception e)
             {
+                if (nodeList.Count != 6)
+                {
+                    writeToConsole(e.Message);
+                    throw new Exception("Not all of the features readed");
+                }
                 writeToConsole(e.Message);
             }
 
@@ -71,9 +71,9 @@ namespace AppGen.AppGenLib
                 {
                     throw new Exception("All nodes in AND operation should be chosen.");
                 }
-                if (trueCount == 0)
+                if (trueCount == 0 && (currNode.Name.Equals("xor") || currNode.Name.Equals("and")))
                 {
-                    throw new Exception("At least on node in XOR / OR / AND operations should be chosen.");
+                    throw new Exception("At least on node in XOR operations should be chosen.");
                 }
                 return trueCount;
             }

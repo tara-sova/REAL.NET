@@ -18,7 +18,7 @@ namespace AppGen.AppGenLib
         {
             DirectoryInfo dirSource = new DirectoryInfo(sourceDirectory);
             DirectoryInfo dirTarget =
-                new DirectoryInfo(Path.Combine(targetDirectory, sourceDirectory.Split(new[] { "/" }, StringSplitOptions.None).Last()));
+                new DirectoryInfo(Path.Combine(targetDirectory, sourceDirectory.Split(new[] { "\\" }, StringSplitOptions.None).Last()));
             
             FindFeatureFilesThatShouldNotBeLoad(sourceDirectory, model);
 
@@ -65,7 +65,7 @@ namespace AppGen.AppGenLib
                 {
                     string featureName = null;
                     string neededAnyway = null;
-                    string fileName = filePath.Split(new[] { "/" }, StringSplitOptions.None).Last();
+                    string fileName = filePath.Split(new[] { "\\" }, StringSplitOptions.None).Last();
 
                     while (!reader.EndOfStream)
                     {
@@ -73,7 +73,7 @@ namespace AppGen.AppGenLib
 
                         if (Regex.Match(line, patternFeature).Success)
                         {
-                            featureName = line.Split(new[] { "Feature" }, StringSplitOptions.None)[1].Split(new[] { "/" }, StringSplitOptions.None)[1];
+                            featureName = line.Split(new[] { "Feature" }, StringSplitOptions.None)[1].Split(new[] { "\"" }, StringSplitOptions.None)[1];
                             if (!model.Features[featureName])
                             {
                                 shouldNotBeLoadedFileList.Add(fileName);

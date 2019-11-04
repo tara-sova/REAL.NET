@@ -28,6 +28,7 @@ namespace AppGen.View
     using WpfControlsLib.Controls.ModelSelector;
     using WpfControlsLib.Controls.Scene;
     using Palette = WpfControlsLib.Controls.Palette.Palette;
+    using System.Diagnostics;
 
     /// <summary>
     /// Main window of the application, launches on application startup.
@@ -115,13 +116,8 @@ namespace AppGen.View
 
         private async void ImportButtonClick(object sender, RoutedEventArgs e)   //NOT ASYNC
         {
-            string generatedXMLModelFileName = AppDomain.CurrentDomain.BaseDirectory + "..\\.." + "\\generatedModel.xml";//@"C:\Users\polina\Documents\xmlModels\generatedModel.xml";//"generatedModel.xml";
-            string classForGeneration = "LectureListActivity.java";
-            string classTemplate = "LectureListActivityTemplate.cshtml";
-            string pathToDirectoryWithFeatures = AppDomain.CurrentDomain.BaseDirectory + "..\\.." + "\\diploma_app\\adminapp";//@"C:\Users\polina\Documents\adminapp";//"adminapp";
-            string pathToTargetDirectory = AppDomain.CurrentDomain.BaseDirectory + "..\\.." + "\\diploma_app\\AppForGeneration\\AdminApp\\app\\src\\main\\java\\com\\example\\polina";//@"C:\Users\polina\Documents\AppForGeneration\AdminApp\app\src\main\java\com\example\polina";
-            //AppForGeneration /AdminApp/app/src/main/java/com/example/polina/";
-
+            string generatedXMLModelFileName = AppDomain.CurrentDomain.BaseDirectory + "..\\.." + "\\generatedModel.xml";
+            string pathToDirectoryWithFeatures = AppDomain.CurrentDomain.BaseDirectory + "..\\.." + "\\diploma_app\\adminapp";
 
             this.importButton.IsEnabled = true;
             //this.stopButton.IsEnabled = true;
@@ -152,25 +148,38 @@ namespace AppGen.View
 
         private async void GenerateButtonClick(object sender, RoutedEventArgs e)   //NOT ASYNC
         {
-            string generatedXMLModelFileName = @"C:\Users\polina\Documents\xmlModels\generatedModel.xml";//"generatedModel.xml";
-            string classForGeneration = "LectureListActivity.java";
-            string classTemplate = @"C:\Users\polina\Documents\filePattern\LectureListActivityTemplate.cshtml";//LectureListActivityTemplate.cshtml";
-            string pathToDirectoryWithFeatures = @"C:\Users\polina\Documents\adminapp";//"adminapp";
-            string pathToTargetDirectory = @"C:\Users\polina\Documents\AppForGeneration\AdminApp\app\src\main\java\com\example\polina";
+            string appGenDirectory = AppDomain.CurrentDomain.BaseDirectory + "..\\..\\";
 
+            // Paths for file generation
+            string classForGenerationName = "LectureListActivity.java";
+            string classTemplateName = "LectureListActivityTemplate.cshtml";
+            string pathToDirectoryWithFeatures = @"diploma_app\adminapp";
+            string pathToTemplateDirectory = @"Template";
+            // Path for coping
+            string pathToTargetDirectory = appGenDirectory + @"diploma_app\Project\AdminApp\app\src\main\java\com\example\polina";
 
             this.token = new CancellationTokenSource();
             this.cancellationToken = this.token.Token;
-
             var repoModel = this.model.Repo.Model("AppGenModel");
-
             void Action(string str) => this.Dispatcher.Invoke(() => this.Console.SendMessage(str));
             FeatureModel featureModel = await Task.Factory.StartNew(() => new FeatureModel().LoadFeatureModelByRepoModel(repoModel, Action), this.cancellationToken);
 
-            RazorFileGenerator.GenerateMainFile(featureModel, classTemplate, classForGeneration, pathToDirectoryWithFeatures).Wait();
-           // CopyFeatureFilesToEnviroment.CopyAppDirectoryToEnvironment(pathToDirectoryWithFeatures, pathToTargetDirectory, featureModel);
-            //new FeatureModel().LoadFeatureModelByRepoModel(repoModel);
+            string argsForFileGenerationProcess = "";
+            foreach (var f in featureModel.Features)
+            {
+                argsForFileGenerationProcess += f.Key + ":" + f.Value + ";";
+            }
 
+            argsForFileGenerationProcess +=  " " + 
+                classForGenerationName + " " + 
+                classTemplateName + " " + 
+                pathToDirectoryWithFeatures + " " + 
+                pathToTemplateDirectory;
+
+            Process fileGenerationProcess = Process.Start(appGenDirectory + @"FileGeneratorExe\FileGenerator.exe", argsForFileGenerationProcess);
+            fileGenerationProcess.WaitForExit();
+
+            CopyFeatureFilesToEnviroment.CopyAppDirectoryToEnvironment(appGenDirectory + pathToDirectoryWithFeatures, pathToTargetDirectory, featureModel);
         }
 
         private void StopButtonClick(object sender, RoutedEventArgs e)
