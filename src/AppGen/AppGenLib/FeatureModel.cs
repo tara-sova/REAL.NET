@@ -24,14 +24,10 @@ namespace AppGen.AppGenLib
             {
                 this.RecursiveIteration(mainNode, nodeList, edgeList);
             }
-            catch (Exception e)
+            catch (AppConfigurationException e)
             {
-                if (nodeList.Count != 6)
-                {
-                    writeToConsole(e.Message);
-                    throw new Exception("Not all of the features readed");
-                }
                 writeToConsole(e.Message);
+                throw e;
             }
 
             return this;
@@ -64,16 +60,16 @@ namespace AppGen.AppGenLib
                     trueCount += selectedCount;
                     if (trueCount > 1 && currNode.Name.Equals("xor"))
                     {
-                        throw new Exception("Only one attribute in XOR operation should be chosen.");
+                        throw new AppConfigurationException("Only one attribute in XOR operation should be chosen.");
                     }
                 }
                 if (trueCount < currEdgeList.Count && currNode.Name.Equals("and"))
                 {
-                    throw new Exception("All nodes in AND operation should be chosen.");
+                    throw new AppConfigurationException("All nodes in AND operation should be chosen.");
                 }
                 if (trueCount == 0 && (currNode.Name.Equals("xor") || currNode.Name.Equals("and")))
                 {
-                    throw new Exception("At least on node in XOR operations should be chosen.");
+                    throw new AppConfigurationException("At least on node in XOR operations should be chosen.");
                 }
                 return trueCount;
             }

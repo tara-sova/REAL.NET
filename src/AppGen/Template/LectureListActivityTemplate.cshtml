@@ -1,0 +1,262 @@
+﻿@using FileGenerator
+@using RazorLight
+@inherits TemplatePage<FileGenerator.Model>
+package com.example.polina.adminapp;
+
+import android.app.Activity;
+import android.app.ListActivity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
+import java.util.ArrayList;
+
+import com.example.polina.adminapp.Lecture;
+@if (Model.Features["LectureAddition"])
+{
+    @Raw("import com.example.polina.adminapp.LectureAddition;\n")
+}
+@if (Model.Features["LectureEdition"])
+{
+    @Raw("import com.example.polina.adminapp.LectureEdition;\n")
+}
+@if (Model.Features["LectureDeletion"])
+ {
+     @Raw("import com.example.polina.adminapp.LectureDeletion;\n")
+ }
+@if (Model.Features["AttendedClients"])
+ {
+     @Raw("import com.example.polina.adminapp.AttendedClientsActivity;\n")
+ }
+@if (Model.Features["BeAttended"])
+ {
+     @Raw("import com.example.polina.adminapp.ClientFormActivity;\n")
+ }
+import com.example.polina.adminapp.OnSwipeTouchListener;
+import com.example.polina.adminapp.R;
+import com.example.polina.adminapp.ServerConnectionInstallation.ServerSetting;
+import com.google.gson.Gson;
+
+import org.springframework.http.ResponseEntity;
+
+
+public class LectureListActivity extends ListActivity implements AdapterView.OnItemLongClickListener {
+
+    public ArrayAdapter<String> mAdapter;
+    private ArrayList<String> titlesForListActivity = new ArrayList<>();
+    private ArrayList<Lecture> allLectures = new ArrayList<>();
+    FloatingActionButton addButton;
+
+    private Boolean lectureEditionFeature = null;
+    private Boolean lectureRemovingFeature = null;
+    private Boolean lectureAdditionFeature = null;
+    private Boolean attendedClientsFeature = null;
+    private Boolean beAttendedFeature = null;
+    private Boolean serverConnection = null;
+
+    private String currentClient = null;
+
+    private String makeTitleForListActivity(Lecture lecture) {
+        return "Лектор: " + lecture.lecturerName + "\n" + "Тема: " + lecture.theme + "\n" + "Время: " + lecture.timeStart + " - " + lecture.timeEnd;
+    }
+
+    private void restoreFeatures() {
+        lectureEditionFeature = true;
+        lectureRemovingFeature = true;
+        lectureAdditionFeature = true;
+        attendedClientsFeature = true;
+        beAttendedFeature = false;
+        serverConnection = true;
+    }
+
+    @Raw("@Override")
+    protected void onCreate(Bundle savedInstanceState) {
+
+        restoreFeatures();
+
+        Lecture lecture1 = new Lecture("Юрий Литвинов", "REAL.NET", "Введение в metaCase системы и демонстрация работы REAL.NET"
+                , "08:30", 830, "09:30", 930);
+        titlesForListActivity.add(makeTitleForListActivity(lecture1));
+
+        Lecture lecture2 = new Lecture("Артемий Безгузиков", "Бизнес-тренинг \"Мир айти и как его найти\"", "Артемий расскажет вам, как стать успешным"
+                , "10:30", 1030, "11:30", 1130);
+        titlesForListActivity.add(makeTitleForListActivity(lecture2));
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        addButton = findViewById(R.id.button7);
+        addButton.setOnClickListener(buttonListener);
+
+        
+        @if (!Model.Features["LectureAddition"])
+        {
+            @Raw("        addButton.setVisibility(View.GONE);\n")
+                
+        }
+
+        mAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_1, titlesForListActivity);
+
+        setListAdapter(mAdapter);
+        getListView().setOnItemLongClickListener(this);
+        OnSwipeTouchListener a = new OnSwipeTouchListener(this, getListView());
+        getListView().setOnTouchListener(a);
+
+        @if (Model.Features["Server"])
+        {
+            @Raw("        ServerSetting.init(true);\n")
+                
+        }
+        else
+        {
+            @Raw("        ServerSetting.init(false);\n")
+                
+        }
+
+        allLectures.add(ServerSetting.postThanGetLecture(lecture1));
+        allLectures.add(ServerSetting.postThanGetLecture(lecture2));
+
+    }
+
+
+    @Raw("@Override")
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+
+        @if (Model.Features["AttendedClients"])
+        {
+            @Raw("            " + 
+                 "Gson gson = new Gson();\n        " +
+                 "Lecture lecture = ServerSetting.getLectureByPosition((long) position);\n        " +
+                 "String lectureAsAString = gson.toJson(lecture);\n        " +
+                 "Intent intent = new Intent(LectureListActivity.this, AttendedClientsActivity.class);\n        " +
+                 "intent.putExtra(\"lectureAsAString\", lectureAsAString);\n        " +
+                 "startActivity(intent);")
+        }
+        else
+        {
+            @Raw("        " + "return;\n")
+        }
+
+    }
+
+    private static final int EDIT_ITEM = 1;
+    @Raw("@Override")
+    @Raw("public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {")
+
+        Gson gson = new Gson();
+        Lecture lecture = ServerSetting.getLectureByPosition((long) position);
+        String lectureAsAString = gson.toJson(lecture);
+        
+        @if (Model.Features["LectureEdition"])
+        {
+            @Raw("        " +
+                 "Toast.makeText(getApplicationContext(), \"Редактировать\", Toast.LENGTH_SHORT).show();\n\n        " +
+                 "Intent intent = new Intent(LectureListActivity.this, LectureEdition.class);\n        " +
+                 "intent.putExtra(\"lectureAsAString\", lectureAsAString);\n        " +
+                 "intent.putExtra(\"position\", position);\n\n        " +
+                 "startActivityForResult(intent, EDIT_ITEM);\n\n")
+        }
+        
+        @if (Model.Features["BeAttended"])
+        {
+            @Raw("        " +
+                 "Toast.makeText(getApplicationContext(), \"Записаться\", Toast.LENGTH_SHORT).show();\n\n        " +
+                 "Intent intent = new Intent(LectureListActivity.this, ClientFormActivity.class);\n        " +
+                 "intent.putExtra(\"lectureAsAString\", lectureAsAString);\n        " +
+                 "intent.putExtra(\"position\", position);\n        " +
+                 "intent.putExtra(\"currentClient\", currentClient);\n\n        " +
+                 "startActivityForResult(intent, EDIT_ITEM);\n\n")
+
+        }
+        return true;
+    }
+
+    private static final int DELETE_ITEM = 2;
+    public void onSwipeRight(int position) {
+        @if (Model.Features["LectureDeletion"])
+        {
+            @Raw("        " +
+                 "String selectedItemAsAString = this.getListView().getItemAtPosition(position).toString();\n        " +
+                 "Intent intent = new Intent(LectureListActivity.this, LectureDeletion.class);\n        " +
+                 "intent.putExtra(\"position\", position);\n        " +
+                 "intent.putExtra(\"selectedItemAsAString\", selectedItemAsAString);\n        " +
+                 "startActivityForResult(intent, DELETE_ITEM);\n\n        ")
+
+        }
+    }
+
+    @Raw("@Override")
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+
+        if (resultCode != Activity.RESULT_OK)
+        {
+            return;
+        }
+
+        @if (Model.Features["LectureDeletion"])
+        {
+            @Raw("        " +
+                 "if (requestCode == DELETE_ITEM) {\n                " +
+                 "int lecturePosition = intent.getExtras().getInt(\"position\");\n                " +
+                 "String selectedItemAsAString = intent.getStringExtra(\"selectedItemAsAString\");\n                " +
+                 "mAdapter.remove(selectedItemAsAString);\n                " +
+                 "allLectures.remove(lecturePosition);\n                " +
+                 "ServerSetting.deleteLecture(lecturePosition);\n                " +
+                 "this.onContentChanged();\n                " +
+                 "mAdapter.notifyDataSetChanged();\n                " +
+                 "return;\n                " +
+                 "}\n\n        ")
+
+        }
+
+        Gson gson = new Gson();
+        String lectureAsAString = intent.getStringExtra("lectureAsAString");
+        Lecture targetLecture = gson.fromJson(lectureAsAString, Lecture.class);
+        int lecturePosition = intent.getExtras().getInt("position");
+
+        @if (Model.Features["BeAttended"])
+        {
+            @Raw("            currentClient = intent.getStringExtra(\"currentClient\");")
+        }
+
+        if (requestCode == EDIT_ITEM) {
+            titlesForListActivity.set(lecturePosition, makeTitleForListActivity(targetLecture));
+            allLectures.set(lecturePosition, targetLecture);
+            ServerSetting.putLecture(targetLecture, lecturePosition);
+        } else if (requestCode == ADD_ITEM) {
+            titlesForListActivity.add(makeTitleForListActivity(targetLecture));
+            allLectures.add(ServerSetting.postThanGetLecture(targetLecture));
+        }
+
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private static final int ADD_ITEM = 3;
+    private View.OnClickListener buttonListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            @if (Model.Features["LectureAddition"])
+            {
+                @Raw("            " +
+                     "Intent intent = new Intent(LectureListActivity.this, LectureAddition.class);\n\n            " +
+                     "if (v.getId() == R.id.button7)\n            " + 
+                     "{\n                Gson gson = new Gson();\n" + 
+                        "                Lecture lecture = new Lecture(\"\", \"\", \"\", \"\", 0, \"\", 0);\n" + 
+                        "                String lectureAsAString = gson.toJson(lecture);\n\n" + 
+                        "                intent.putExtra(\"lectureAsAString\", lectureAsAString);\n" + 
+                        "                intent.putExtra(\"position\", -1);\n\n" + 
+                        "                startActivityForResult(intent, ADD_ITEM);\n" + "            " +
+                     "}\n"
+                    )
+            }
+        }
+    };
+
+}

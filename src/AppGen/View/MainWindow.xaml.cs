@@ -131,7 +131,16 @@ namespace AppGen.View
             this.cancellationToken = this.token.Token;
             var repoModel = this.model.Repo.Model("AppGenModel");
             void Action(string str) => this.Dispatcher.Invoke(() => this.Console.SendMessage(str));
-            FeatureModel featureModel = await Task.Factory.StartNew(() => new FeatureModel().LoadFeatureModelByRepoModel(repoModel, Action), this.cancellationToken);
+
+            FeatureModel featureModel = null;
+            try
+            {
+                featureModel = await Task.Factory.StartNew(() => new FeatureModel().LoadFeatureModelByRepoModel(repoModel, Action), this.cancellationToken);
+            }
+            catch (AppConfigurationException)
+            {
+                return;
+            }
 
             string argsForFileGenerationProcess = "";
             foreach (var f in featureModel.Features)

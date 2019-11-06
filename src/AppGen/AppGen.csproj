@@ -434,6 +434,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AppGenLib\AppConfigurationException.cs" />
     <Compile Include="AppGenLib\CopyFeatureFilesToEnviroment.cs" />
     <Compile Include="AppGenLib\FeatureLoaderByAnnotations.cs" />
     <Compile Include="AppGenLib\FeatureModel.cs" />
