@@ -101,36 +101,18 @@
           </DataGrid.Columns>
         </DataGrid>
 
-        <Button 
-                    Grid.Row="5"
-                    Content="Constraints"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Bottom"
-                    Click="ConstraintsButtonClick" Height="26"/>
-        <Button x:Name="executeButton" 
-                    Grid.Row="6"
-                    Content="Execute"
-                    HorizontalAlignment="Stretch"
-                    Click="ExecuteButtonClick" Margin="0,0.667,0.333,0"/>
-        <Button x:Name="stopButton" 
-                    Grid.Row="7"
-                    Content="Stop"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Bottom"
-                    Click="StopButtonClick" Height="26" IsEnabled="False"/>
         <Button x:Name="importButton" 
-                    Grid.Row="8"
+                    Grid.Row="5"
                     Content="Import"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Bottom"
                     Click="ImportButtonClick" Height="26" IsEnabled="True"/>
         <Button x:Name="generateButton" 
-                    Grid.Row="7"
+                    Grid.Row="6"
                     Content="Generate"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Bottom"
-                    Click="GenerateButtonClick" Height="26" IsEnabled="False" Margin="0,0,0.333,-24.333"/>
-
+                    Click="GenerateButtonClick" Height="26" IsEnabled="False"/>
       </Grid>
 
     </DockPanel>

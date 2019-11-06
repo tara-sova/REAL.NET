@@ -87,7 +87,6 @@ namespace AppGen.AppGenLib
                 }
                 return selectedCount;
             }
-            return 100500;
         }
     }
 }

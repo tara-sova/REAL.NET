@@ -438,7 +438,6 @@
     <Compile Include="AppGenLib\FeatureLoaderByAnnotations.cs" />
     <Compile Include="AppGenLib\FeatureModel.cs" />
     <Compile Include="AppGenLib\FeatureWithParameters.cs" />
-    <Compile Include="AppGenLib\RazorFileGenerator.cs" />
     <Compile Include="AppGenLib\XmlModelGenerator.cs" />
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

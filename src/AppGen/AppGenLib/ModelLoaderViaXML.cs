@@ -121,7 +121,6 @@ namespace AppGen.AppGenLib
             else
             {
                 throw new Exception("Unknown logical type in XML feature model");
-                
             }
 
             Repo.INode diagramLogicalNode = repoModel.CreateElement(logicalNodeType) as Repo.INode;
@@ -132,7 +131,7 @@ namespace AppGen.AppGenLib
             linkBetweenAbstractAndLogicalNodes.From = diagramAbstractNode;
             linkBetweenAbstractAndLogicalNodes.To = diagramLogicalNode;
 
-             var listForReturn = new List<Tuple<object, object>>();
+            var listForReturn = new List<Tuple<object, object>>();
             
             foreach (XmlNode concreteNode in logicalOperationConcreteNodes)
             {
@@ -153,10 +152,7 @@ namespace AppGen.AppGenLib
                 Repo.IEdge linkBetweenLogicalAndConcreteNodes = repoModel.CreateElement(linkType) as Repo.IEdge;
                 linkBetweenLogicalAndConcreteNodes.From = diagramLogicalNode;
                 linkBetweenLogicalAndConcreteNodes.To = diagramConcreteNode;
-
-
                 listForReturn.Add(new Tuple<object, object>(concreteNode, diagramConcreteNode));
-
 
                 if (!isAbstractLink)
                 {
@@ -174,11 +170,8 @@ namespace AppGen.AppGenLib
                         }
                     }
                 }
-
                 diagramConcreteNode.AddAttribute(logicalOperationType, Repo.AttributeKind.Boolean, logicalOperationType.ToString());
-
             }
-
             return listForReturn;
         }
     }

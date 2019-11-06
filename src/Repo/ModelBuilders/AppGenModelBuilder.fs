@@ -29,39 +29,10 @@ type AppGenModelBuilder() =
             let metamodelAbstractNode = Model.findNode metamodel "AbstractNode"
             let metamodelMainFeatureModelNode = Model.findNode metamodel "MainFeatureModelNode"
 
-            //let metamodelInitialNode = Model.findNode metamodel "InitialNode"
-            //let metamodelFinalNode = Model.findNode metamodel "FinalNode"
-            //let metamodelTakeoff = Model.findNode metamodel "Takeoff"
-            //let metamodelLand = Model.findNode metamodel "Land"
-            //let metamodelMove = Model.findNode metamodel "Move"
-            //let metamodelTimer = Model.findNode metamodel "Timer"
-            //let metamodelIf = Model.findNode metamodel "IfNode"
-
             let link = Model.findAssociationWithSource metamodelAbstractNode "target"
-            //let ifLink = Model.findAssociationWithSource metamodelAbstractNode "ifTarget"
 
             let model = repo.CreateModel("AppGenModel", metamodel)
             let mainFeatureModelNode = infrastructure.Instantiate model metamodelMainFeatureModelNode
-
-
-            //let initialNode = infrastructure.Instantiate model metamodelInitialNode
-            //let finalNode = infrastructure.Instantiate model metamodelFinalNode
-            //let finalNode2 = infrastructure.Instantiate model metamodelFinalNode
-
-            //let takeoff = infrastructure.Instantiate model metamodelTakeoff
-            
-            //let landing = infrastructure.Instantiate model metamodelLand
-            //let move = infrastructure.Instantiate model metamodelMove
-
-            //let timer1 = infrastructure.Instantiate model metamodelTimer
-            //let timer2 = infrastructure.Instantiate model metamodelTimer
-            //let timer3 = infrastructure.Instantiate model metamodelTimer
-            //infrastructure.Element.SetAttributeValue timer1 "delay" "1"
-            //infrastructure.Element.SetAttributeValue timer2 "delay" "1"
-            //infrastructure.Element.SetAttributeValue timer3 "delay" "1"
-            
-            //let ifNode = infrastructure.Instantiate model metamodelIf
-            
             let find name = Model.findNode infrastructureMetamodel name
 
             // The same as in the metamodel but with functions
@@ -79,39 +50,7 @@ type AppGenModelBuilder() =
                 aLink.Source <- Some src
                 aLink.Target <- Some dst
                 dst
-            
-            //let (-->>) (src: IElement) dst =
-            //    let aLink = infrastructure.Instantiate model ifLink :?> IAssociation
-            //    infrastructure.Element.SetAttributeValue aLink "Value" "true"
-            //    aLink.Source <- Some src
-            //    aLink.Target <- Some dst
-            //    dst
-            
-            //let (-->>>) (src: IElement) dst =
-            //    let aLink = infrastructure.Instantiate model ifLink :?> IAssociation
-            //    infrastructure.Element.SetAttributeValue aLink "Value" "false"
-            //    aLink.Source <- Some src
-            //    aLink.Target <- Some dst
-            //    dst
-            
-            // Make some function
-            //let newFunc = metamodelInitialNode --> metamodelTakeoff --> metamodelFinalNode :?> INode
-            
-            // Get the start node of function
-            let rec getStart (el: INode) = 
-                match Seq.toList el.IncomingEdges with
-                | [] -> el
-                | head::_ -> 
-                    match head.Source with
-                    | None -> el
-                    | Some s -> getStart(s :?> INode)
-            
-            // Add new node with function to metamodel
-            +("FuncionNode", "View/Pictures/functionBlock.png", false) |> ignore
 
             mainFeatureModelNode |> ignore
-            
-            //initialNode --> ifNode(*-->> takeoff --> move --> timer3 --> landing*) --> finalNode |> ignore
-            //ifNode -->>> finalNode2 |> ignore
 
             ()

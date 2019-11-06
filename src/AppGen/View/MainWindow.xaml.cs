@@ -93,35 +93,12 @@ namespace AppGen.View
             }
         }
 
-        private void ConstraintsButtonClick(object sender, RoutedEventArgs e)
-        {
-            // var constraints = new ConstraintsWindow(this.repo, this.repo.Model(this.modelName));
-            // constraints.ShowDialog();
-        }
-
-        private async void ExecuteButtonClick(object sender, RoutedEventArgs e)
-        {
-            this.stopButton.IsEnabled = true;
-            this.executeButton.IsEnabled = false;
-            this.token = new CancellationTokenSource();
-            this.cancellationToken = this.token.Token;
-          //  var codeExe = new CodeExecution();
-            var t = this.model.Repo.Model("AppGenModel");
-            void Action(string str) => this.Dispatcher.Invoke(() => this.Console.SendMessage(str));
-           // await Task.Factory.StartNew(() => codeExe.Execute(t, Action), this.cancellationToken);
-            this.stopButton.IsEnabled = false;
-            this.executeButton.IsEnabled = true;
-        }
-
-
-        private async void ImportButtonClick(object sender, RoutedEventArgs e)   //NOT ASYNC
+        private async void ImportButtonClick(object sender, RoutedEventArgs e)
         {
             string generatedXMLModelFileName = AppDomain.CurrentDomain.BaseDirectory + "..\\.." + "\\generatedModel.xml";
             string pathToDirectoryWithFeatures = AppDomain.CurrentDomain.BaseDirectory + "..\\.." + "\\diploma_app\\adminapp";
 
             this.importButton.IsEnabled = true;
-            //this.stopButton.IsEnabled = true;
-            //this.executeButton.IsEnabled = false;
             this.token = new CancellationTokenSource();
             this.cancellationToken = this.token.Token;
 
@@ -129,24 +106,15 @@ namespace AppGen.View
             XmlModelGenerator.GenerateXmlModel(featureListForModelGeneration, generatedXMLModelFileName);
 
             var repoModel = this.model.Repo.Model("AppGenModel");
-            //string xmlmodelFilePath = @"C:\Users\polina\Documents\AppGenXML\generatedModel_main_node.xml";
 
             void Action(string str) => this.Dispatcher.Invoke(() => this.Console.SendMessage(str));
             await Task.Factory.StartNew(() => ModelLoaderViaXML.LoadModel(repoModel, generatedXMLModelFileName, Action), this.cancellationToken);
-
-            //ModelLoaderViaXML.LoadModel(repoModel, xmlmodelFilePath);
-
-            //void Action(string str) => this.Dispatcher.Invoke(() => this.Console.SendMessage(str));
-            //await Task.Factory.StartNew(() => codeExe.Execute(t, Action), this.cancellationToken);
-            this.stopButton.IsEnabled = false;
-            this.executeButton.IsEnabled = true;
             this.model.Update();
             this.importButton.IsEnabled = false;
             this.generateButton.IsEnabled = true;
-
         }
 
-        private async void GenerateButtonClick(object sender, RoutedEventArgs e)   //NOT ASYNC
+        private async void GenerateButtonClick(object sender, RoutedEventArgs e)
         {
             string appGenDirectory = AppDomain.CurrentDomain.BaseDirectory + "..\\..\\";
 
@@ -157,6 +125,7 @@ namespace AppGen.View
             string pathToTemplateDirectory = @"Template";
             // Path for coping
             string pathToTargetDirectory = appGenDirectory + @"diploma_app\Project\AdminApp\app\src\main\java\com\example\polina";
+            string currentSolutionFolderName = "AppGen";
 
             this.token = new CancellationTokenSource();
             this.cancellationToken = this.token.Token;
@@ -174,20 +143,21 @@ namespace AppGen.View
                 classForGenerationName + " " + 
                 classTemplateName + " " + 
                 pathToDirectoryWithFeatures + " " + 
-                pathToTemplateDirectory;
+                pathToTemplateDirectory + " " +
+                currentSolutionFolderName;
 
-            Process fileGenerationProcess = Process.Start(appGenDirectory + @"FileGeneratorExe\FileGenerator.exe", argsForFileGenerationProcess);
+            Process buidExe = Process.Start(
+                "dotnet", 
+                "publish" + " " + 
+                appGenDirectory + @"..\FileGenerator\FileGenerator.csproj" + " " +
+                "-r win-x64 -c Release --self-contained");
+            buidExe.WaitForExit();
+
+            string pathToExe = appGenDirectory + @"..\FileGenerator\bin\release\netcoreapp2.0\win-x64\publish\FileGenerator.exe";
+            Process fileGenerationProcess = Process.Start(pathToExe, argsForFileGenerationProcess);
             fileGenerationProcess.WaitForExit();
 
             CopyFeatureFilesToEnviroment.CopyAppDirectoryToEnvironment(appGenDirectory + pathToDirectoryWithFeatures, pathToTargetDirectory, featureModel);
-        }
-
-        private void StopButtonClick(object sender, RoutedEventArgs e)
-        {
-            this.token.Cancel();
-            this.Console.SendMessage("Stop execution of code");
-            this.stopButton.IsEnabled = false;
-            this.executeButton.IsEnabled = true;
         }
 
         private void AttributesViewCellEditEnding(object sender, DataGridCellEditEndingEventArgs e)

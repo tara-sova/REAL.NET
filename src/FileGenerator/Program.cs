@@ -23,14 +23,17 @@ namespace FileGenerator
                 features.Add(keyValue[0], keyValue[1].ToLower().Equals("true"));
             }
 
+            // src\FileGenerator\bin\release\netcoreapp2.0\win-x64\publish\FileGenerator.exe
+            string pathFromExeDirectoryToSource = "..\\..\\..\\..\\..\\..\\";
+            string pathToSlnFolder = AppDomain.CurrentDomain.BaseDirectory + pathFromExeDirectoryToSource + args[5] + "\\";
+
             string classForGenerationName = args[1];
             string classTemplateName = args[2];
-            string pathToDirectoryWithFeatures = AppDomain.CurrentDomain.BaseDirectory + "..\\" + args[3];
-            string pathToTemplateDirectory = AppDomain.CurrentDomain.BaseDirectory + "..\\" + args[4];
-
+            string pathToDirectoryWithFeatures = pathToSlnFolder + args[3];
+            string pathToTemplateDirectory = pathToSlnFolder + args[4];
             Model model = new Model(features);
 
-            GenerateMainFile(model, classTemplateName, classForGenerationName, pathToDirectoryWithFeatures, pathToTemplateDirectory).Wait();
+            await GenerateMainFile(model, classTemplateName, classForGenerationName, pathToDirectoryWithFeatures, pathToTemplateDirectory);
         }
 
         public static async Task GenerateMainFile(Model model, string classTemplateName,

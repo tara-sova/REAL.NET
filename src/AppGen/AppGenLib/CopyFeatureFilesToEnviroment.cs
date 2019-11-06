@@ -54,7 +54,6 @@ namespace AppGen.AppGenLib
             string[] filePaths = Directory.GetFiles(path, "*.java", SearchOption.AllDirectories);
             string patternFeature = @"\s*@AnnotationList.Feature\w*";
             string patternAnyway = @"\s*@AnnotationList.NeededAnywayFeatureFile\w*";
-            //            string patternFeatureConnected = @"\s*@AnnotationList.ConnectedToFeature\w*";
 
             foreach (var filePath in filePaths)
             {
@@ -64,7 +63,6 @@ namespace AppGen.AppGenLib
                 using (var reader = new StreamReader(filePath))
                 {
                     string featureName = null;
-                    string neededAnyway = null;
                     string fileName = filePath.Split(new[] { "\\" }, StringSplitOptions.None).Last();
 
                     while (!reader.EndOfStream)
